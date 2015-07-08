@@ -4,15 +4,14 @@ puts "Enter your email"
 user_email = gets.chomp
 user = User.find_or_create_by(email: user_email)
 
-begin
-  puts "What do you want to do?"
-  puts "0. Create a shortened URL"
-  puts "1. Visit a shortened URL"
+puts "What do you want to do?"
+puts "0. Create a shortened URL"
+puts "1. Visit a shortened URL"
+
+choice = nil
+until choice && ["0", "1"].include?(choice)
+  puts "Please enter 0 or 1"
   choice = gets.chomp
-  raise StandardError unless ["0", "1"].include?(choice)
-rescue
-  retry
-  "Please enter 0 or 1"
 end
 
 choice = choice.to_i
