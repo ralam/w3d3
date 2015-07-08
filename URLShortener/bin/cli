@@ -2,7 +2,7 @@ require 'launchy'
 
 puts "Enter your email"
 user_email = gets.chomp
-user = User.where(email: user_email).first
+user = User.find_or_create_by(email: user_email)
 
 begin
   puts "What do you want to do?"

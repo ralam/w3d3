@@ -40,14 +40,8 @@ class ShortenedUrl < ActiveRecord::Base
   end
 
   def num_recent_uniques
-    uniq_ids = []
-    visits.each do |visit|
-      if visit.created_at > 10.minutes.ago && !uniq_ids.include?(visit.user_id)
-        uniq_ids << visit.user_id
-      end
-    end
-
-    uniq_ids.count
+    Visit.where(
+      "created_at > ? AND short_url_id = ? ", 10.minutes.ago, self.id
+      ).select(:user_id).distinct.count
   end
-
 end
