@@ -16,7 +16,16 @@ class ShortenedUrl < ActiveRecord::Base
     primary_key: :id
   )
 
+  has_many(
+    :taggings,
+    class_name: 'Tagging',
+    foreign_key: :short_url_id,
+    primary_key: :id
+  )
+
   has_many :visitors, -> { distinct }, through: :visits, source: :user
+
+  has_many :tag_topics, through: :taggings, source: :topic
 
   def self.random_code
     code = SecureRandom.urlsafe_base64
