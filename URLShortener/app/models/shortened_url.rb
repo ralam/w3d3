@@ -1,6 +1,8 @@
 class ShortenedUrl < ActiveRecord::Base
   validates :short_url, uniqueness: true
+  validates :long_url, length: { maximum: 255 }
   validates :user_id, :short_url, :long_url, presence: true
+  validate :cannot_create_more_than_five_in_prev_minute
 
   belongs_to(
     :submitter,
@@ -52,5 +54,17 @@ class ShortenedUrl < ActiveRecord::Base
     Visit.where(
       "created_at > ? AND short_url_id = ? ", 10.minutes.ago, self.id
       ).select(:user_id).distinct.count
+  end
+
+  private
+  def cannot_create_more_than_five_in_prev_minute
+    recent_urls = ShortenedUrl
+                    .where(
+                    "created_at > ? AND user_id = ? ",
+                    1.minute.ago, self.user_id
+                    )
+    if recent_urls.count >= 5
+      errors[:count] << "Can't make more than five urls per minute"
+    end
   end
 end
