@@ -42,6 +42,13 @@ class ShortenedUrl < ActiveRecord::Base
     self.create!(user_id: user.id, long_url: long_url, short_url: self.random_code)
   end
 
+  def self.prune(n_minutes = 10)
+    Visit
+      .where("created_at > ?", n_minutes.minutes.ago)
+      .select(:short_url_id)
+      #TODO finish this pruning!
+  end
+
   def num_clicks
     visits.count
   end
