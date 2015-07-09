@@ -10,5 +10,11 @@ class TagTopic < ActiveRecord::Base
 
   has_many :short_urls, through: :taggings, source: :short_url
 
-  
+  def self.popular(topic, n = 1)
+    self
+      .find_by(topic: topic)
+      .short_urls
+      .sort_by(&:num_clicks)
+      .last(n)
+  end
 end
